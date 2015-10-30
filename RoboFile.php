@@ -177,7 +177,7 @@ class RoboFile extends \Robo\Tasks
 		// Caching cloned installations locally
 		if (!is_dir('tests/cache') || (time() - filemtime('tests/cache') > 60 * 60 * 24))
 		{
-			$this->buildGitCloneCommand();
+			$this->_exec($this->buildGitCloneCommand());
 		}
 
 		// Get Joomla Clean Testing sites
@@ -188,6 +188,13 @@ class RoboFile extends \Robo\Tasks
 
 		// Copy cache to the testing folder
 		$this->_copyDir('tests/cache', $this->cmsPath);
+
+		// Optionally change owner to fix permissions issues
+		if (!empty($this->configuration->localUser) && !$this->isWindows())
+		{
+			$this->_exec('chown -R ' . $this->configuration->localUser . ' ' . $this->cmsPath);
+		}
+
 		$this->say('Joomla CMS site created at ' . $this->cmsPath);
 	}
 
