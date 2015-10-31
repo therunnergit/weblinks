@@ -9,12 +9,12 @@ To prepare the system tests (Selenium) to be run in your local machine you are a
 
 This is not required, and if in doubt you can just skip this section, but there may be some specific use cases when you need (or want) to override the default behaviour of RoboFile.php. To do this, copy `RoboFile.dist.ini` to `RoboFile.ini` and add options in INI format, one per line, e.g.
 
-    skipClone = true
+    skipCreate = true
     cmsPath = tests/joomla-cms3
 
 The currently available options are as follows:
 
-* `skipClone`: set to `true` to avoid the cms repo being deleted and re-cloned at each test execution. Useful to save time and bandwidth while you're debugging your test environment. But please be aware that if you don't refresh the repo you'll have to manually check the `installation` folder is present and the `configuration.php` is not.
+* `skipCreate`: set to `true` to avoid the cms site being deleted and re-created at each test execution. This may be useful to save time and bandwidth while you're debugging your test environment. But please be aware that if you don't refresh the site you'll have to manually check the `installation` folder is present and the `configuration.php` is not, or the installation part will fail.
 * `cmsPath`: set to the local path (absolute or relative) where you'd like the test website to be installed. Default is `tests/joomla-cms3`.
 * `branch`: set to whatever existing branch from the `joomla-cms` project if you want to clone that specific branch. Default is `staging`.
  

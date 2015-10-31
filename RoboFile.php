@@ -170,16 +170,10 @@ class RoboFile extends \Robo\Tasks
 	 */
 	public function createTestingSite($use_htaccess = false)
 	{
-		if (!empty($this->configuration->skipClone))
+		if (!empty($this->configuration->skipCreate))
 		{
 			$this->say('Reusing Joomla CMS site already present at ' . $this->cmsPath);
 			return;
-		}
-
-		// Caching cloned installations locally
-		if (!is_dir('tests/cache') || (time() - filemtime('tests/cache') > 60 * 60 * 24))
-		{
-			$this->_exec($this->buildGitCloneCommand());
 		}
 
 		// Get Joomla Clean Testing sites
@@ -197,6 +191,8 @@ class RoboFile extends \Robo\Tasks
 			}
 		}
 
+		// Get a copy of Joomla code and copy to local CMS root
+		$this->getRepo('tests/cache');
 		$this->_copyDir('tests/cache', $this->cmsPath);
 
 		// Optionally change owner to fix permissions issues
@@ -213,6 +209,19 @@ class RoboFile extends \Robo\Tasks
 			$this->_copy('/tests/joomla-cms3/htaccess.txt', 'tests/joomla-cms3/.htaccess');
 			$this->_exec('sed -e "s,# RewriteBase /,RewriteBase /tests/joomla-cms3/,g" --in-place tests/joomla-cms3/.htaccess');
 		}
+	}
+
+	/**
+	 * @param   string $localPath   Local path where to download the code to
+	 */
+	public function getRepo($localPath)
+	{
+		// Caching cloned installations locally
+		if (!is_dir($localPath) || (time() - filemtime($localPath) > 60 * 60 * 24))
+		{
+			$this->_exec($this->buildGitCloneCommand());
+		}
+
 	}
 
 	/**
